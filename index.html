@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+  <title>SliceInvest — Smart Investment Platform</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.0/css/all.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<!-- ===== TOAST NOTIFICATION ===== -->
+<div id="toast" class="toast"></div>
+
+<!-- ===== SPLASH SCREEN ===== -->
+<div id="splashScreen" class="splash-screen">
+  <div class="splash-content">
+    <div class="splash-logo">
+      <div class="logo-icon"><i class="fas fa-chart-line"></i></div>
+      <h1 class="logo-text">Slice<span>Invest</span></h1>
+    </div>
+    <p class="splash-tagline">Grow Your Wealth, One Slice at a Time 🚀</p>
+    <div class="splash-loader"><div class="loader-bar"></div></div>
+  </div>
+</div>
+
+<!-- ===== LOGIN PAGE ===== -->
+<div id="loginPage" class="page hidden">
+  <div class="login-bg">
+    <div class="login-blob blob1"></div>
+    <div class="login-blob blob2"></div>
+    <div class="login-blob blob3"></div>
+  </div>
+  <div class="login-container">
+    <div class="login-header">
+      <div class="login-logo">
+        <div class="logo-icon sm"><i class="fas fa-chart-line"></i></div>
+        <h1 class="logo-text">Slice<span>Invest</span></h1>
+      </div>
+      <p class="login-subtitle">Smart investments, real returns 💰</p>
+    </div>
+    <div class="login-card">
+      <div class="tab-switcher">
+        <button class="tab-btn active" data-tab="user">Login</button>
+        <button class="tab-btn" data-tab="signup">Sign Up</button>
+      </div>
+      <div id="userLoginForm" class="login-form active">
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> Phone Number</label>
+          <div class="phone-input-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="userPhone" placeholder="9876543210" maxlength="10" class="phone-with-prefix"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="userPassword" placeholder="Enter your password"/>
+            <button class="eye-btn" onclick="togglePass('userPassword',this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <button class="btn-primary full" onclick="userLogin()">
+          <i class="fas fa-arrow-right-to-bracket"></i> Login
+        </button>
+        <p class="login-note">New here? <a href="#" class="signup-link" onclick="switchToSignup(event)">Create an account</a></p>
+      </div>
+      <!-- ===== SIGNUP FORM ===== -->
+      <div id="signupLoginForm" class="login-form">
+        <div class="form-group">
+          <label><i class="fas fa-user"></i> Full Name</label>
+          <input type="text" id="signupName" placeholder="Enter your full name"/>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-phone"></i> Phone Number</label>
+          <div class="phone-input-wrap">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="signupPhone" placeholder="9876543210" maxlength="10" class="phone-with-prefix"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="signupPassword" placeholder="Min 6 characters"/>
+            <button class="eye-btn" onclick="togglePass('signupPassword',this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-lock"></i> Confirm Password</label>
+          <div class="pass-wrap">
+            <input type="password" id="signupConfirmPassword" placeholder="Re-enter your password"/>
+            <button class="eye-btn" onclick="togglePass('signupConfirmPassword',this)"><i class="fas fa-eye"></i></button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label><i class="fas fa-gift"></i> Referral Code (Optional)</label>
+          <input type="text" id="signupReferral" placeholder="Enter referral code"/>
+        </div>
+        <button class="btn-primary full signup-btn" onclick="userSignup()">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+        <p class="login-note">Already have an account? <a href="#" class="signup-link" onclick="switchToLogin(event)">Login here</a></p>
+      </div>
+    </div>
+    <p class="login-footer">© 2025 SliceInvest. All rights reserved.</p>
+  </div>
+</div>
+
+<!-- ===== USER DASHBOARD ===== -->
+<div id="userDashboard" class="page hidden">
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="logo-icon xs"><i class="fas fa-chart-line"></i></div>
+      <span class="header-brand">SliceInvest</span>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" onclick="showNotifications()"><i class="fas fa-bell"></i><span id="notifBadge" class="badge hidden">0</span></button>
+      <button class="icon-btn" onclick="logout()"><i class="fas fa-power-off"></i></button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="user-main" id="userMainContent">
+
+    <!-- Pull to Refresh (Zomato-style) -->
+    <div class="pull-to-refresh" id="pullToRefresh">
+      <i class="fas fa-arrow-down ptr-arrow" id="ptrArrow"></i>
+      <div class="ptr-spinner" id="ptrSpinner"></div>
+      <span class="ptr-text" id="ptrText">Pull down to refresh</span>
+    </div>
+
+    <!-- ===== HOME SECTIONS ===== -->
+    <div id="homeSection">
+      <!-- Welcome Banner -->
+      <section class="welcome-banner">
+        <div class="welcome-text">
+          <p class="welcome-sub">Good day, Investor 👋</p>
+          <h2 id="userNameDisplay">Loading...</h2>
+        </div>
+        <div class="welcome-avatar">
+          <div class="avatar-circle" id="headerAvatar"><i class="fas fa-user"></i></div>
+        </div>
+      </section>
+
+      <!-- Daily Reward Banner -->
+      <section class="daily-reward-banner" id="dailyRewardBanner" onclick="claimDailyReward()">
+        <div class="reward-left">
+          <i class="fas fa-gift"></i>
+          <div>
+            <strong>Daily Check-In Reward</strong>
+            <p id="dailyRewardSubtext">Tap to claim your daily bonus!</p>
+          </div>
+        </div>
+        <div class="reward-right">
+          <span class="reward-streak" id="rewardStreak">🔥 0 days</span>
+        </div>
+      </section>
+
+      <!-- Daily Reward Calendar -->
+      <section class="daily-calendar-section" id="dailyCalendarSection">
+        <div class="section-header">
+          <h3><i class="fas fa-calendar-check"></i> Check-In Streak</h3>
+        </div>
+        <div class="daily-calendar" id="dailyCalendar"></div>
+      </section>
+
+      <!-- Quick Actions -->
+      <section class="quick-actions">
+        <button class="qa-btn" onclick="openModal('depositModal')">
+          <div class="qa-icon deposit"><i class="fas fa-money-bill-wave"></i></div>
+          <span>Deposit</span>
+        </button>
+        <button class="qa-btn" onclick="openModal('withdrawModal')">
+          <div class="qa-icon withdraw"><i class="fas fa-arrow-up"></i></div>
+          <span>Withdraw</span>
+        </button>
+        <button class="qa-btn" onclick="switchUserTab('invest',document.querySelector('[data-page=invest]'))">
+          <div class="qa-icon invest"><i class="fas fa-seedling"></i></div>
+          <span>Invest</span>
+        </button>
+        <button class="qa-btn" onclick="openModal('calculatorModal')">
+          <div class="qa-icon calc"><i class="fas fa-calculator"></i></div>
+          <span>Calculator</span>
+        </button>
+      </section>
+
+      <!-- Wallet Card -->
+      <section class="wallet-section">
+        <div class="wallet-card">
+          <div class="wallet-top">
+            <div>
+              <p class="wallet-label">Total Balance</p>
+              <h2 class="wallet-amount" id="walletBalance">₹0.00</h2>
+            </div>
+            <div class="wallet-icon"><i class="fas fa-wallet"></i></div>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn deposit" onclick="openModal('depositModal')">
+              <i class="fas fa-plus-circle"></i> Deposit
+            </button>
+            <button class="wallet-btn withdraw" onclick="openModal('withdrawModal')">
+              <i class="fas fa-minus-circle"></i> Withdraw
+            </button>
+          </div>
+          <div class="wallet-stats">
+            <div class="stat-item">
+              <p class="stat-label">Invested</p>
+              <p class="stat-val green" id="totalInvested">₹0</p>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <p class="stat-label">Returns</p>
+              <p class="stat-val orange" id="totalReturns">₹0</p>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+              <p class="stat-label">Active</p>
+              <p class="stat-val blue" id="activePlans">0</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Portfolio Chart -->
+      <section class="portfolio-section">
+        <div class="section-header">
+          <h3><i class="fas fa-chart-pie"></i> Portfolio Overview</h3>
+        </div>
+        <div class="portfolio-chart-card">
+          <canvas id="portfolioChart" height="200"></canvas>
+          <div class="portfolio-empty hidden" id="portfolioEmpty">
+            <i class="fas fa-chart-pie"></i>
+            <p>Start investing to see your portfolio</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Referral Card -->
+      <section class="referral-section">
+        <div class="referral-card">
+          <div class="referral-info">
+            <h4><i class="fas fa-users"></i> Refer & Earn</h4>
+            <p>Invite friends — you earn <span class="referral-bonus-amount">₹50</span> when they deposit ₹500+!</p>
+          </div>
+          <div class="referral-code-box">
+            <span id="referralCode">—</span>
+            <button class="copy-btn" onclick="copyReferral()"><i class="fas fa-copy"></i></button>
+          </div>
+        </div>
+      </section>
+
+
+
+      <!-- Transaction History -->
+      <section class="transactions-section">
+        <div class="section-header">
+          <h3><i class="fas fa-clock-rotate-left"></i> Recent Transactions</h3>
+        </div>
+        <div id="transactionsList" class="transactions-list">
+          <div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet</p></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== INVEST TAB ===== -->
+    <div id="investSection" class="tab-section hidden">
+      <!-- Investment Plans -->
+      <section class="plans-section">
+        <div class="section-header">
+          <h3><i class="fas fa-seedling"></i> Investment Plans</h3>
+          <span class="section-badge" id="planCountBadge">3 Plans</span>
+        </div>
+        <div class="plans-grid" id="plansGrid"></div>
+      </section>
+
+      <!-- My Investments -->
+      <section class="my-investments">
+        <div class="section-header">
+          <h3><i class="fas fa-briefcase"></i> My Investments</h3>
+          <button class="see-all-btn" onclick="loadMyInvestments()"><i class="fas fa-refresh"></i></button>
+        </div>
+        <div id="investmentsList" class="investments-list">
+          <div class="empty-state"><i class="fas fa-inbox"></i><p>No investments yet</p></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== WALLET TAB ===== -->
+    <div id="walletSection" class="tab-section hidden">
+      <section class="wallet-section">
+        <div class="wallet-card">
+          <div class="wallet-top">
+            <div>
+              <p class="wallet-label">Total Balance</p>
+              <h2 class="wallet-amount" id="walletBalance2">₹0.00</h2>
+            </div>
+            <div class="wallet-icon"><i class="fas fa-wallet"></i></div>
+          </div>
+          <div class="wallet-actions">
+            <button class="wallet-btn deposit" onclick="openModal('depositModal')">
+              <i class="fas fa-plus-circle"></i> Deposit
+            </button>
+            <button class="wallet-btn withdraw" onclick="openModal('withdrawModal')">
+              <i class="fas fa-minus-circle"></i> Withdraw
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wallet Transactions -->
+      <section class="transactions-section">
+        <div class="section-header">
+          <h3><i class="fas fa-clock-rotate-left"></i> All Transactions</h3>
+        </div>
+        <div class="txn-filter-tabs">
+          <button class="txn-filter active" onclick="filterTransactions('all',this)">All</button>
+          <button class="txn-filter" onclick="filterTransactions('deposit',this)">Deposits</button>
+          <button class="txn-filter" onclick="filterTransactions('withdraw',this)">Withdrawals</button>
+          <button class="txn-filter" onclick="filterTransactions('invest',this)">Investments</button>
+          <button class="txn-filter" onclick="filterTransactions('daily_return',this)">Daily Returns</button>
+        </div>
+        <div id="walletTransactionsList" class="transactions-list">
+          <div class="empty-state"><i class="fas fa-receipt"></i><p>No transactions yet</p></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== PROOFS TAB ===== -->
+    <div id="proofsSection" class="tab-section hidden">
+      <!-- Trust Header -->
+      <section class="proofs-trust-header">
+        <div class="trust-hero">
+          <div class="trust-shield-icon"><i class="fas fa-shield-halved"></i></div>
+          <h2>Verified Withdrawals</h2>
+          <p>Real payment proofs from our investors — verified by admin</p>
+          <div class="trust-stats-row">
+            <div class="trust-stat">
+              <i class="fas fa-check-double"></i>
+              <span id="proofTotalCount">0</span>
+              <label>Verified</label>
+            </div>
+            <div class="trust-stat">
+              <i class="fas fa-indian-rupee-sign"></i>
+              <span id="proofTotalAmount">₹0</span>
+              <label>Total Paid</label>
+            </div>
+            <div class="trust-stat">
+              <i class="fas fa-users"></i>
+              <span id="proofUniqueUsers">0</span>
+              <label>Users Paid</label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Proofs List -->
+      <section class="proofs-feed-section">
+        <div class="section-header">
+          <h3><i class="fas fa-receipt"></i> Payment Proofs</h3>
+          <span class="section-badge success"><i class="fas fa-circle-check"></i> Live</span>
+        </div>
+        <div id="withdrawProofsList" class="proofs-feed">
+          <div class="empty-state sm"><i class="fas fa-shield-check"></i><p>No verified proofs yet</p></div>
+        </div>
+      </section>
+
+      <!-- Trust Footer -->
+      <section class="proofs-trust-footer">
+        <div class="trust-guarantee-card">
+          <i class="fas fa-lock"></i>
+          <div>
+            <strong>100% Genuine Platform</strong>
+            <p>Every withdrawal proof is manually verified by our admin team. Your money is safe with us.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ===== SETTINGS TAB ===== -->
+    <div id="settingsSection" class="tab-section hidden">
+      <section class="settings-page">
+        <div class="settings-profile-card">
+          <div class="sp-avatar" id="settingsAvatar"><i class="fas fa-user"></i></div>
+          <h3 id="settingsUserName">User</h3>
+          <p id="settingsUserPhone">+91 XXXXXXXXXX</p>
+          <div class="profile-completion" id="profileCompletion">
+            <div class="pc-bar"><div class="pc-fill" id="pcFill" style="width:40%"></div></div>
+            <span class="pc-text">40% Complete</span>
+          </div>
+        </div>
+
+        <!-- Settings Groups -->
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-user-pen"></i> Profile</div>
+          <div class="settings-item" onclick="openModal('editProfileModal')">
+            <div class="si-left"><i class="fas fa-id-card"></i><span>Edit Profile</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+          <div class="settings-item" onclick="openModal('changePasswordModal')">
+            <div class="si-left"><i class="fas fa-key"></i><span>Change Login Password</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-building-columns"></i> Banking</div>
+          <div class="settings-item" onclick="openModal('bankAccountsModal')">
+            <div class="si-left"><i class="fas fa-credit-card"></i><span>Saved Bank Accounts</span></div>
+            <span class="si-count" id="bankAccountCount">0</span>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+          <div class="settings-item" onclick="openModal('withdrawPassModal')">
+            <div class="si-left"><i class="fas fa-shield-halved"></i><span>Withdraw Password</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+        </div>
+
+        <!-- Withdraw Slip Upload Section -->
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-receipt"></i> Withdraw Slip Upload</div>
+          <div class="slip-upload-card">
+            <p class="slip-upload-desc">Upload your withdraw payment received slip to get verified by admin and earn a bonus!</p>
+            <div class="form-group">
+              <label><i class="fas fa-indian-rupee-sign"></i> Amount Received (₹)</label>
+              <input type="number" id="slipAmount" placeholder="Enter the amount received"/>
+            </div>
+            <div class="form-group">
+              <label><i class="fas fa-image"></i> Payment Slip Image</label>
+              <div class="file-upload-area" onclick="document.getElementById('slipUploadInput').click()">
+                <input type="file" id="slipUploadInput" accept="image/*" hidden onchange="handleWithdrawSlipUpload(event)"/>
+                <div class="file-upload-placeholder" id="slipUploadPlaceholder">
+                  <i class="fas fa-cloud-arrow-up"></i>
+                  <p>Tap to upload payment slip</p>
+                  <span>JPG, PNG (Max 5MB)</span>
+                </div>
+                <div class="file-upload-preview hidden" id="slipUploadPreview">
+                  <img id="slipUploadPreviewImg" src="" alt="Slip"/>
+                  <button class="remove-file-btn" onclick="removeWithdrawSlip(event)"><i class="fas fa-xmark"></i></button>
+                </div>
+              </div>
+            </div>
+            <button class="btn-primary full" onclick="submitWithdrawSlip()">
+              <i class="fas fa-paper-plane"></i> Upload Slip
+            </button>
+          </div>
+          <div class="sg-title" style="margin-top:16px;"><i class="fas fa-history"></i> My Uploaded Slips</div>
+          <div id="myUploadedSlipsList" class="uploaded-slips-list">
+            <div class="empty-state sm"><i class="fas fa-receipt"></i><p>No slips uploaded yet</p></div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-sliders"></i> Preferences</div>
+          <div class="settings-item">
+            <div class="si-left"><i class="fas fa-moon"></i><span>Dark Mode</span></div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <div class="si-left"><i class="fas fa-bell"></i><span>Push Notifications</span></div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="notifToggle" checked onchange="toggleNotifications()"/>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+          <div class="settings-item">
+            <div class="si-left"><i class="fas fa-language"></i><span>Language</span></div>
+            <span class="si-value">English</span>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-link"></i> Community & Support</div>
+          <div class="settings-item" id="settingsTelegramItem" onclick="openTelegramLink()">
+            <div class="si-left"><i class="fab fa-telegram"></i><span>Join Our Telegram Channel</span></div>
+            <i class="fas fa-external-link-alt si-arrow"></i>
+          </div>
+          <div class="settings-item" id="settingsCustomerCareItem" onclick="openCustomerCareLink()">
+            <div class="si-left"><i class="fas fa-headset"></i><span>Customer Care</span></div>
+            <i class="fas fa-external-link-alt si-arrow"></i>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <div class="sg-title"><i class="fas fa-circle-info"></i> About</div>
+          <div class="settings-item" onclick="openModal('helpModal')">
+            <div class="si-left"><i class="fas fa-question-circle"></i><span>Help & Support</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+          <div class="settings-item" onclick="openModal('termsModal')">
+            <div class="si-left"><i class="fas fa-file-contract"></i><span>Terms & Conditions</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+          <div class="settings-item" onclick="openModal('privacyModal')">
+            <div class="si-left"><i class="fas fa-user-shield"></i><span>Privacy Policy</span></div>
+            <i class="fas fa-chevron-right si-arrow"></i>
+          </div>
+          <div class="settings-item">
+            <div class="si-left"><i class="fas fa-code-branch"></i><span>App Version</span></div>
+            <span class="si-value">v2.1.0</span>
+          </div>
+        </div>
+
+        <button class="btn-danger full" onclick="logout()">
+          <i class="fas fa-right-from-bracket"></i> Logout
+        </button>
+
+        <p class="settings-footer">Made with ❤️ by SliceInvest Team</p>
+      </section>
+    </div>
+  </main>
+
+  <!-- Bottom Nav -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="switchUserTab('home',this)">
+      <i class="fas fa-home"></i><span>Home</span>
+    </button>
+    <button class="nav-item" data-page="invest" onclick="switchUserTab('invest',this)">
+      <i class="fas fa-chart-pie"></i><span>Invest</span>
+    </button>
+    <button class="nav-item" data-page="proofs" onclick="switchUserTab('proofs',this)">
+      <i class="fas fa-shield-halved"></i><span>Proofs</span>
+    </button>
+    <button class="nav-item" data-page="wallet" onclick="switchUserTab('wallet',this)">
+      <i class="fas fa-wallet"></i><span>Wallet</span>
+    </button>
+    <button class="nav-item" data-page="settings" onclick="switchUserTab('settings',this)">
+      <i class="fas fa-gear"></i><span>Settings</span>
+    </button>
+  </nav>
+</div>
+
+<!-- ===== MODALS ===== -->
+
+<!-- Deposit Modal (Updated with UPI) -->
+<div id="depositModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle"></i> Make a Deposit</h3>
+      <button class="modal-close" onclick="closeModal('depositModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <!-- Step 1: Amount -->
+      <div class="form-group">
+        <label>Amount (₹)</label>
+        <input type="number" id="depositAmount" placeholder="Enter amount" min="100"/>
+      </div>
+      <div class="quick-amount-btns">
+        <button onclick="setDepositAmount(500)">₹500</button>
+        <button onclick="setDepositAmount(1000)">₹1,000</button>
+        <button onclick="setDepositAmount(2500)">₹2,500</button>
+        <button onclick="setDepositAmount(5000)">₹5,000</button>
+      </div>
+
+      <!-- Step 2: Deposit Method Tabs (dynamic from admin config) -->
+      <div class="deposit-method-tabs" id="depositMethodTabs">
+        <!-- Populated by JS based on admin config -->
+      </div>
+
+      <!-- UPI Payment Info -->
+      <div class="deposit-upi-box" id="depositUpiSection">
+        <div class="upi-header">
+          <i class="fas fa-qrcode"></i>
+          <span>Pay via UPI</span>
+        </div>
+        <div class="upi-id-display">
+          <div class="upi-id-label">Send payment to this UPI ID:</div>
+          <div class="upi-id-value" id="depositUpiId">sliceinvest@ybl</div>
+          <button class="upi-copy-btn" onclick="copyDepositUpi()">
+            <i class="fas fa-copy"></i> Copy UPI ID
+          </button>
+        </div>
+        <div class="upi-steps">
+          <div class="upi-step"><span class="step-num">1</span> Copy the UPI ID above</div>
+          <div class="upi-step"><span class="step-num">2</span> Open any UPI app (GPay, PhonePe, Paytm)</div>
+          <div class="upi-step"><span class="step-num">3</span> Send the deposit amount</div>
+          <div class="upi-step"><span class="step-num">4</span> Upload screenshot & UTR below</div>
+        </div>
+      </div>
+
+      <!-- QR Code Payment Section -->
+      <div class="deposit-qr-box hidden" id="depositQrSection">
+        <div class="qr-title">
+          <i class="fas fa-qrcode"></i>
+          <span>Scan QR Code to Pay</span>
+        </div>
+        <img id="depositQrImage" class="qr-image" src="" alt="Payment QR Code"/>
+        <p class="qr-hint">Scan this QR code with any UPI app to pay</p>
+      </div>
+
+      <!-- Bank Account Details Section -->
+      <div class="deposit-bank-box hidden" id="depositBankSection">
+        <div class="bank-title">
+          <i class="fas fa-building-columns"></i>
+          <span>Bank Transfer Details</span>
+        </div>
+        <div id="depositBankDetails">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Step 3: Upload Screenshot + UTR -->
+      <div class="form-group">
+        <label><i class="fas fa-image"></i> Payment Screenshot</label>
+        <div class="file-upload-area" id="screenshotUploadArea" onclick="document.getElementById('screenshotInput').click()">
+          <input type="file" id="screenshotInput" accept="image/*" hidden onchange="handleScreenshotUpload(event)"/>
+          <div class="file-upload-placeholder" id="screenshotPlaceholder">
+            <i class="fas fa-cloud-arrow-up"></i>
+            <p>Tap to upload payment screenshot</p>
+            <span>JPG, PNG (Max 5MB)</span>
+          </div>
+          <div class="file-upload-preview hidden" id="screenshotPreview">
+            <img id="screenshotPreviewImg" src="" alt="Screenshot"/>
+            <button class="remove-file-btn" onclick="removeScreenshot(event)"><i class="fas fa-xmark"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-hashtag"></i> UTR Number / Transaction ID</label>
+        <input type="text" id="depositUTR" placeholder="Enter 12-digit UTR number"/>
+      </div>
+
+      <div class="info-note"><i class="fas fa-info-circle"></i> Your deposit will be verified and approved within 15-30 minutes after screenshot review.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('depositModal')">Cancel</button>
+      <button class="btn-primary" id="depositSubmitBtn" onclick="submitDeposit()"><i class="fas fa-paper-plane"></i> Submit Deposit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-minus-circle"></i> Withdraw Funds</h3>
+      <button class="modal-close" onclick="closeModal('withdrawModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Amount (₹)</label>
+        <input type="number" id="withdrawAmount" placeholder="Enter amount" min="100"/>
+      </div>
+      <div class="quick-amount-btns">
+        <button onclick="setWithdrawAmount(500)">₹500</button>
+        <button onclick="setWithdrawAmount(1000)">₹1,000</button>
+        <button onclick="setWithdrawAmount(2000)">₹2,000</button>
+        <button onclick="setWithdrawAmount(5000)">₹5,000</button>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-building-columns"></i> Select Bank Account</label>
+        <select id="withdrawBankSelect">
+          <option value="">— Select saved account —</option>
+          <option value="new">+ Enter new account</option>
+        </select>
+      </div>
+      <div id="newAccountFields" class="hidden">
+        <div class="form-group">
+          <label>Bank Account / UPI ID</label>
+          <input type="text" id="withdrawAccount" placeholder="Enter account details"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label><i class="fas fa-shield-halved"></i> Withdraw Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="withdrawPassword" placeholder="Enter your withdraw password"/>
+          <button class="eye-btn" onclick="togglePass('withdrawPassword',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="info-note" style="margin-bottom:8px;"><i class="fas fa-coins"></i> <span id="withdrawableInfo">You can only withdraw earnings from investment plans.</span></div>
+      <div class="info-note warning"><i class="fas fa-triangle-exclamation"></i> Ensure your account details are correct before submitting.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('withdrawModal')">Cancel</button>
+      <button class="btn-primary orange" onclick="submitWithdrawal()"><i class="fas fa-paper-plane"></i> Request</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invest Modal -->
+<div id="investModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-seedling"></i> Invest in Plan</h3>
+      <button class="modal-close" onclick="closeModal('investModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="selected-plan-preview" id="selectedPlanPreview"></div>
+      <div class="info-note"><i class="fas fa-info-circle"></i> Funds will be deducted from your wallet balance.</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('investModal')">Cancel</button>
+      <button class="btn-primary green" onclick="confirmInvest()"><i class="fas fa-check"></i> Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Calculator Modal -->
+<div id="calculatorModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-calculator"></i> Investment Calculator</h3>
+      <button class="modal-close" onclick="closeModal('calculatorModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Investment Amount (₹)</label>
+        <input type="number" id="calcAmount" placeholder="e.g. 5000" min="100" oninput="calculateReturns()"/>
+      </div>
+      <div class="form-group">
+        <label>Daily Return Rate (%)</label>
+        <input type="number" id="calcRate" placeholder="e.g. 2.0" step="0.1" min="0.1" oninput="calculateReturns()"/>
+      </div>
+      <div class="form-group">
+        <label>Duration (Days)</label>
+        <input type="number" id="calcDays" placeholder="e.g. 30" min="1" oninput="calculateReturns()"/>
+      </div>
+      <div class="calc-result" id="calcResult">
+        <div class="cr-row"><span>Daily Earning</span><strong id="crDaily">₹0.00</strong></div>
+        <div class="cr-row"><span>Total Return</span><strong id="crTotal">₹0.00</strong></div>
+        <div class="cr-row highlight"><span>Final Amount</span><strong id="crFinal">₹0.00</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bank Accounts Modal -->
+<div id="bankAccountsModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-building-columns"></i> Saved Bank Accounts</h3>
+      <button class="modal-close" onclick="closeModal('bankAccountsModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div id="bankAccountsList" class="bank-accounts-list">
+        <div class="empty-state"><i class="fas fa-credit-card"></i><p>No saved accounts</p></div>
+      </div>
+      <button class="btn-primary full mt-16" onclick="openModal('addBankModal');closeModal('bankAccountsModal')">
+        <i class="fas fa-plus"></i> Add New Account
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Bank Account Modal -->
+<div id="addBankModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-plus-circle"></i> Add Bank Account</h3>
+      <button class="modal-close" onclick="closeModal('addBankModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="bank-type-tabs">
+        <button class="bt-tab active" onclick="switchBankType('bank',this)">Bank Account</button>
+        <button class="bt-tab" onclick="switchBankType('upi',this)">UPI ID</button>
+      </div>
+      <div id="bankFields">
+        <div class="form-group">
+          <label>Account Holder Name</label>
+          <input type="text" id="bankHolderName" placeholder="Name as per bank"/>
+        </div>
+        <div class="form-group">
+          <label>Bank Name</label>
+          <input type="text" id="bankName" placeholder="e.g. State Bank of India"/>
+        </div>
+        <div class="form-group">
+          <label>Account Number</label>
+          <input type="text" id="bankAccountNumber" placeholder="Enter account number"/>
+        </div>
+        <div class="form-group">
+          <label>Confirm Account Number</label>
+          <input type="text" id="bankAccountConfirm" placeholder="Re-enter account number"/>
+        </div>
+        <div class="form-group">
+          <label>IFSC Code</label>
+          <input type="text" id="bankIFSC" placeholder="e.g. SBIN0001234"/>
+        </div>
+      </div>
+      <div id="upiFields" class="hidden">
+        <div class="form-group">
+          <label>UPI ID</label>
+          <input type="text" id="upiId" placeholder="e.g. yourname@upi"/>
+        </div>
+        <div class="form-group">
+          <label>Display Name</label>
+          <input type="text" id="upiDisplayName" placeholder="Name for this UPI"/>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('addBankModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveBankAccount()"><i class="fas fa-save"></i> Save Account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-pen"></i> Edit Profile</h3>
+      <button class="modal-close" onclick="closeModal('editProfileModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="editName" placeholder="Your full name"/>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="editEmail" placeholder="Your email address"/>
+      </div>
+      <div class="form-group">
+        <label>Phone (cannot change)</label>
+        <input type="tel" id="editPhone" disabled/>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('editProfileModal')">Cancel</button>
+      <button class="btn-primary" onclick="saveProfile()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div id="changePasswordModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-key"></i> Change Password</h3>
+      <button class="modal-close" onclick="closeModal('changePasswordModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Current Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="currLoginPass" placeholder="Enter current password"/>
+          <button class="eye-btn" onclick="togglePass('currLoginPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="newLoginPass" placeholder="New password (min 6 chars)"/>
+          <button class="eye-btn" onclick="togglePass('newLoginPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="confirmLoginPass" placeholder="Confirm new password"/>
+          <button class="eye-btn" onclick="togglePass('confirmLoginPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('changePasswordModal')">Cancel</button>
+      <button class="btn-primary" onclick="changeLoginPassword()"><i class="fas fa-save"></i> Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Withdraw Password Modal -->
+<div id="withdrawPassModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-shield-halved"></i> Withdraw Password</h3>
+      <button class="modal-close" onclick="closeModal('withdrawPassModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <p class="settings-desc">Set a separate password required for every withdrawal request.</p>
+      <div class="form-group">
+        <label>Current Withdraw Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="currentWithdrawPass" placeholder="Current (blank if not set)"/>
+          <button class="eye-btn" onclick="togglePass('currentWithdrawPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>New Withdraw Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="newWithdrawPass" placeholder="New withdraw password"/>
+          <button class="eye-btn" onclick="togglePass('newWithdrawPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <div class="pass-wrap">
+          <input type="password" id="confirmWithdrawPass" placeholder="Confirm password"/>
+          <button class="eye-btn" onclick="togglePass('confirmWithdrawPass',this)"><i class="fas fa-eye"></i></button>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal('withdrawPassModal')">Cancel</button>
+      <button class="btn-primary" onclick="setWithdrawPassword()"><i class="fas fa-save"></i> Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notifications Modal -->
+<div id="notificationsModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="notif-header-actions" style="display:flex;align-items:center;gap:10px;flex:1;">
+        <h3 style="flex:1;"><i class="fas fa-bell"></i> Notifications</h3>
+        <button class="mark-all-read-btn" id="markAllReadBtn" onclick="markAllNotificationsRead()"><i class="fas fa-check-double"></i> Mark all read</button>
+      </div>
+      <button class="modal-close" onclick="closeModal('notificationsModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body" id="notificationsList">
+      <div class="empty-state"><i class="fas fa-bell-slash"></i><p>No notifications</p></div>
+    </div>
+  </div>
+</div>
+
+<!-- Help Modal -->
+<div id="helpModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-question-circle"></i> Help & Support</h3>
+      <button class="modal-close" onclick="closeModal('helpModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="help-item">
+        <h4><i class="fas fa-circle-question"></i> How to Deposit?</h4>
+        <p>Go to Deposit, enter amount, pay using UPI to the displayed UPI ID, then upload your payment screenshot and enter the UTR number. Your deposit will be verified within 15-30 minutes.</p>
+      </div>
+      <div class="help-item">
+        <h4><i class="fas fa-circle-question"></i> How to Withdraw?</h4>
+        <p>First, set a withdraw password in Settings → Withdraw Password. Then tap Withdraw, select your saved bank account, enter amount and withdraw password. Daily withdrawals are supported!</p>
+      </div>
+      <div class="help-item">
+        <h4><i class="fas fa-circle-question"></i> How do Investment Plans work?</h4>
+        <p>Choose a plan, invest the required amount, and receive daily returns directly to your wallet. You can withdraw your earnings every day!</p>
+      </div>
+      <div class="help-item">
+        <h4><i class="fas fa-circle-question"></i> How does Referral work?</h4>
+        <p>Share your unique referral code with friends. When they sign up using your code and make their first deposit of ₹500 or more, you earn <span class="referral-bonus-amount">₹50</span> bonus!</p>
+      </div>
+      <div class="help-item">
+        <h4><i class="fas fa-envelope"></i> Contact Support</h4>
+        <p>Email: support@sliceinvest.com<br>Phone: +91 1800-123-4567</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Terms Modal -->
+<div id="termsModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-file-contract"></i> Terms & Conditions</h3>
+      <button class="modal-close" onclick="closeModal('termsModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="legal-text">
+        <h4>1. Acceptance</h4>
+        <p>By using SliceInvest, you agree to these terms and conditions. Investment involves risk and past performance doesn't guarantee future returns.</p>
+        <h4>2. User Accounts</h4>
+        <p>You must provide accurate information during registration. You are responsible for maintaining the confidentiality of your account credentials.</p>
+        <h4>3. Investments</h4>
+        <p>All investment plans provide daily returns. Returns are credited daily and can be withdrawn immediately.</p>
+        <h4>4. Withdrawals</h4>
+        <p>Withdrawal requests are processed within 24-48 hours. A valid withdraw password must be set before making requests. Daily withdrawals are supported.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Privacy Modal -->
+<div id="privacyModal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3><i class="fas fa-user-shield"></i> Privacy Policy</h3>
+      <button class="modal-close" onclick="closeModal('privacyModal')"><i class="fas fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="legal-text">
+        <h4>Data Collection</h4>
+        <p>We collect only essential data: name, phone number, email, and financial transaction details needed to provide our services.</p>
+        <h4>Data Security</h4>
+        <p>Your data is encrypted and stored securely. We never share your personal information with third parties without your consent.</p>
+        <h4>Cookies</h4>
+        <p>We use local storage to maintain your session and preferences. No tracking cookies are used.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ANTI-ZOOM: Bulletproof Native App Experience ===== -->
+<script>
+(function() {
+  'use strict';
+
+  // 1. Prevent pinch-to-zoom (multi-touch)
+  document.addEventListener('touchstart', function(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // 2. Prevent zoom via touch move (pinch gesture)
+  document.addEventListener('touchmove', function(e) {
+    if (e.touches.length > 1) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // 3. Prevent double-tap to zoom
+  var lastTouchEnd = 0;
+  document.addEventListener('touchend', function(e) {
+    var now = Date.now();
+    if (now - lastTouchEnd <= 300) {
+      e.preventDefault();
+    }
+    lastTouchEnd = now;
+  }, { passive: false });
+
+  // 4. Prevent Safari gesture events (iOS specific zoom)
+  document.addEventListener('gesturestart', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('gesturechange', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('gestureend', function(e) {
+    e.preventDefault();
+  }, { passive: false });
+
+  // 5. Prevent keyboard zoom (Ctrl/Cmd + / -)
+  document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && (e.key === '+' || e.key === '-' || e.key === '=' || e.key === '0')) {
+      e.preventDefault();
+    }
+  });
+
+  // 6. Prevent scroll wheel zoom (Ctrl + scroll)
+  document.addEventListener('wheel', function(e) {
+    if (e.ctrlKey || e.metaKey) {
+      e.preventDefault();
+    }
+  }, { passive: false });
+
+  // 7. Force reset zoom if somehow zoomed
+  function resetZoom() {
+    var viewport = document.querySelector('meta[name="viewport"]');
+    if (viewport) {
+      viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover');
+    }
+  }
+
+  // Reset zoom on orientation change and resize
+  window.addEventListener('orientationchange', function() {
+    resetZoom();
+    setTimeout(resetZoom, 100);
+    setTimeout(resetZoom, 500);
+  });
+
+  window.addEventListener('resize', function() {
+    // Only reset if visual viewport differs from layout viewport (zoomed)
+    if (window.visualViewport) {
+      if (Math.abs(window.visualViewport.scale - 1) > 0.01) {
+        resetZoom();
+      }
+    }
+  });
+
+  // 8. Visual Viewport API: detect and counteract zoom
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', function() {
+      if (Math.abs(window.visualViewport.scale - 1) > 0.05) {
+        resetZoom();
+        // Force scale back
+        document.body.style.zoom = (1 / window.visualViewport.scale);
+        setTimeout(function() {
+          document.body.style.zoom = '';
+        }, 50);
+      }
+    });
+  }
+
+  // Initial reset
+  resetZoom();
+})();
+</script>
+
+<!-- ===== SCRIPTS ===== -->
+<script src="js/firebase-config.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>
